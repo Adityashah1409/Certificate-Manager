@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Certificate Manager{% endblock %}
+
+{% block content %}
+<style>
+    .dashboard-header {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .welcome-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .welcome-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        border: 1px solid #e9ecef;
+        transition: all 0.2s ease;
+        height: 100%;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .stat-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        font-size: 0.85rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    .action-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        text-align: center;
+        border: 1px solid #e9ecef;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.2s ease;
+        height: 100%;
+    }
+
+    .action-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .action-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        color: white;
+        font-size: 1.5rem;
+    }
+
+    .action-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .action-description {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .activity-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1.5rem;
+        border: 1px solid #e9ecef;
+        margin-bottom: 1rem;
+    }
+
+    .activity-item {
+        padding: 1rem;
+        border-left: 3px solid #6366f1;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+
+    .activity-title {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .activity-description {
+        color: #666;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    /* Colors for different stats */
+    .stat-users { background: #6366f1; }
+    .stat-events { background: #10b981; }
+    .stat-certificates { background: #f59e0b; }
+    .stat-emails { background: #06b6d4; }
+
+    /* Action colors */
+    .action-primary { background: #6366f1; }
+    .action-success { background: #10b981; }
+    .action-warning { background: #f59e0b; }
+
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+        .dashboard-header {
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .welcome-title {
+            font-size: 1.5rem;
+        }
+        
+        .stat-card, .action-card {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<!-- Dashboard Header -->
+<div class="dashboard-header">
+    <h1 class="welcome-title">Welcome back, {{ current_user.username }}! 👋</h1>
+    <p class="welcome-subtitle">Here's your certificate management overview</p>
+</div>
+
+<!-- Statistics Cards -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon stat-users">
+                <i class="fas fa-users"></i>
+            </div>
+            <div class="stat-number">{{ students_count or 0 }}</div>
+            <div class="stat-label">Total Students</div>
+            <a href="{{ url_for('upload_students') }}" class="stat-btn btn btn-outline-primary btn-sm">
+                Add Students
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon stat-events">
+                <i class="fas fa-calendar"></i>
+            </div>
+            <div class="stat-number">{{ events_count or 0 }}</div>
+            <div class="stat-label">Events Created</div>
+            <a href="{{ url_for('events') }}" class="stat-btn btn btn-outline-success btn-sm">
+                Create Event
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon stat-certificates">
+                <i class="fas fa-certificate"></i>
+            </div>
+            <div class="stat-number">{{ certificates_count or 0 }}</div>
+            <div class="stat-label">Certificates</div>
+            <a href="{{ url_for('bulk_certificates') }}" class="stat-btn btn btn-outline-warning btn-sm">
+                Generate
+            </a>
+        </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+        <div class="stat-card">
+            <div class="stat-icon stat-emails">
+                <i class="fas fa-paper-plane"></i>
+            </div>
+            <div class="stat-number">{{ emails_sent or 0 }}</div>
+            <div class="stat-label">Emails Sent</div>
+            <a href="#" class="stat-btn btn btn-outline-info btn-sm">
+                Send More
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+<div class="mb-4">
+    <h2 class="section-title">Quick Actions</h2>
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+            <a href="{{ url_for('events') }}" class="action-card">
+                <div class="action-icon action-primary">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h5 class="action-title">Create New Event</h5>
+                <p class="action-description">Set up a new event with custom details and settings</p>
+            </a>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <a href="{{ url_for('upload_students') }}" class="action-card">
+                <div class="action-icon action-success">
+                    <i class="fas fa-upload"></i>
+                </div>
+                <h5 class="action-title">Upload Students</h5>
+                <p class="action-description">Import student data via Excel files quickly</p>
+            </a>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <a href="{{ url_for('bulk_certificates') }}" class="action-card">
+                <div class="action-icon action-warning">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <h5 class="action-title">Generate Certificates</h5>
+                <p class="action-description">Create professional PDF certificates in bulk</p>
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Activity -->
+<div class="row">
+    <div class="col-lg-6">
+        <h2 class="section-title">Recent Events</h2>
+        <div class="activity-card">
+            {% if recent_events %}
+            {% for event in recent_events[:5] %}
+            <div class="activity-item">
+                <h6 class="activity-title">{{ event.title }}</h6>
+                <p class="activity-description">
+                    {{ event.event_type.value }} organized by {{ event.organizer }}
+                    {% if event.participants %} • {{ event.participants|length }} participants{% endif %}
+                </p>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="activity-item">
+                <h6 class="activity-title">Welcome to Certificate Manager! 🎉</h6>
+                <p class="activity-description">
+                    Get started by creating your first event and uploading student data.
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <h2 class="section-title">Quick Tips</h2>
+        <div class="activity-card">
+            <div class="activity-item" style="border-left-color: #10b981;">
+                <h6 class="activity-title">Upload Custom Images</h6>
+                <p class="activity-description">Add logos, signatures, and backgrounds to make your certificates unique</p>
+            </div>
+            <div class="activity-item" style="border-left-color: #f59e0b;">
+                <h6 class="activity-title">Bulk Generation</h6>
+                <p class="activity-description">Generate certificates for all participants at once with one click</p>
+            </div>
+            <div class="activity-item" style="border-left-color: #06b6d4;">
+                <h6 class="activity-title">Email Distribution</h6>
+                <p class="activity-description">Automatically send certificates to participants via email</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

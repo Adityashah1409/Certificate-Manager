@@ -1,0 +1,417 @@
+{% extends "base.html" %}
+
+{% block title %}Bulk Certificates - Certificate Manager{% endblock %}
+
+{% block content %}
+<style>
+    .certificate-header {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    .generate-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        border: 1px solid #e9ecef;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1);
+        outline: none;
+    }
+
+    .btn-warning {
+        background: #f59e0b;
+        border: none;
+        color: white;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+        margin-right: 0.5rem;
+    }
+
+    .btn-warning:hover {
+        background: #d97706;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .btn-info {
+        background: #06b6d4;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-info:hover {
+        background: #0891b2;
+        transform: translateY(-1px);
+    }
+
+    .info-card {
+        background: #f0f9ff;
+        border: 1px solid #e0f2fe;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .info-card h5 {
+        color: #0369a1;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .info-card ul, .info-card ol {
+        margin-bottom: 0;
+        color: #374151;
+    }
+
+    .info-card li {
+        margin-bottom: 0.5rem;
+        line-height: 1.5;
+    }
+
+    .event-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        border: 1px solid #e9ecef;
+        margin-bottom: 1rem;
+        transition: all 0.2s ease;
+    }
+
+    .event-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .event-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .event-details {
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+    }
+
+    .event-type {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .student-badge {
+        background: #f59e0b;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    .action-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        border-radius: 6px;
+        margin-right: 0.5rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .no-events {
+        text-align: center;
+        padding: 3rem;
+        color: #666;
+    }
+
+    .no-events i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .form-help {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.5rem;
+    }
+</style>
+
+<!-- Header -->
+<div class="certificate-header">
+    <h1 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem;">Certificate Generation</h1>
+    <p style="font-size: 1.1rem; opacity: 0.9; margin: 0;">Generate professional certificates for all your students</p>
+</div>
+
+<!-- Generate Form -->
+<div class="generate-card">
+    <h2 class="section-title">Generate Certificates</h2>
+    <form method="POST">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Select Event</label>
+                    <select class="form-select" name="event_id" required>
+                        <option value="">Choose an event...</option>
+                        {% for event in events %}
+                        <option value="{{ event.id }}">
+                            {{ event.title }} ({{ event.participants|length or 0 }} students)
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <div class="form-help">
+                        <i class="fas fa-info-circle me-1"></i>Select the event to generate certificates for
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Template Style</label>
+                    <select class="form-select" name="template_id">
+                        <option value="">Auto-detect from event type</option>
+                        <option value="basic">Basic Template</option>
+                        <option value="enhanced">Enhanced Template</option>
+                        <option value="premium">Premium Template</option>
+                    </select>
+                    <div class="form-help">
+                        <i class="fas fa-magic me-1"></i>Leave blank for automatic template selection
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="d-flex flex-wrap gap-2">
+            <button type="submit" name="action" value="generate" class="btn btn-warning">
+                <i class="fas fa-certificate me-2"></i>Generate PDFs
+            </button>
+            <button type="button" class="btn btn-info" onclick="generateAndEmail()">
+                <i class="fas fa-envelope me-2"></i>Generate & Email
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- How It Works -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="info-card">
+            <h5><i class="fas fa-cogs me-2"></i>How It Works</h5>
+            <ol>
+                <li>Select an event with students</li>
+                <li>Choose template or use auto-detection</li>
+                <li>Generate certificates as PDF files</li>
+                <li>Or send directly via email</li>
+            </ol>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="info-card">
+            <h5><i class="fas fa-star me-2"></i>Smart Features</h5>
+            <ul>
+                <li>Auto-detects best template by event type</li>
+                <li>Includes custom logos and signatures</li>
+                <li>Professional email notifications</li>
+                <li>Bulk processing for efficiency</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Events List -->
+{% if events %}
+<div class="generate-card">
+    <h2 class="section-title">Available Events</h2>
+    <div class="row">
+        {% for event in events %}
+        <div class="col-lg-6 col-xl-4 mb-3">
+            <div class="event-card">
+                <!-- Event Type Badge -->
+                {% set type_colors = {
+                    'Seminar': 'bg-info',
+                    'Webinar': 'bg-success', 
+                    'Workshop': 'bg-warning',
+                    'Conference': 'bg-primary',
+                    'Lecture': 'bg-secondary',
+                    'Training': 'bg-dark',
+                    'Competition': 'bg-danger',
+                    'Hackathon': 'bg-info'
+                } %}
+                <span class="event-type {{ type_colors.get(event.event_type.value, 'bg-light text-dark') }}">
+                    {{ event.event_type.value }}
+                </span>
+
+                <!-- Event Details -->
+                <h5 class="event-title">{{ event.title }}</h5>
+                <div class="event-details">
+                    <div><i class="fas fa-building me-2"></i>{{ event.organizer }}</div>
+                    <div><i class="fas fa-calendar me-2"></i>
+                        {% if event.start_date and event.end_date %}
+                            {% if event.start_date == event.end_date %}
+                                {{ event.start_date.strftime('%b %d, %Y') }}
+                            {% else %}
+                                {{ event.start_date.strftime('%b %d') }} - {{ event.end_date.strftime('%b %d, %Y') }}
+                            {% endif %}
+                        {% else %}
+                            {{ event.date.strftime('%b %d, %Y') if event.date else 'No date set' }}
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Student Count -->
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="student-badge">{{ event.participants|length or 0 }} students</span>
+                    {% if event.logo_path or event.signature_path or event.background_path %}
+                    <div>
+                        {% if event.logo_path %}<i class="fas fa-image text-success me-1" title="Has Logo"></i>{% endif %}
+                        {% if event.signature_path %}<i class="fas fa-signature text-info me-1" title="Has Signature"></i>{% endif %}
+                        {% if event.background_path %}<i class="fas fa-panorama text-warning me-1" title="Has Background"></i>{% endif %}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Quick Actions -->
+                {% if event.participants and event.participants|length > 0 %}
+                <div class="d-flex flex-wrap gap-1">
+                    <button class="action-btn btn btn-outline-warning btn-sm" onclick="generateForEvent({{ event.id }}, '{{ event.title }}')">
+                        <i class="fas fa-certificate"></i> Generate
+                    </button>
+                    <button class="action-btn btn btn-outline-info btn-sm" onclick="emailForEvent({{ event.id }}, '{{ event.title }}')">
+                        <i class="fas fa-envelope"></i> Email
+                    </button>
+                    <a href="{{ url_for('preview_certificate_html', event_id=event.id, student_id=event.participants[0].student.id) }}" 
+                       class="action-btn btn btn-outline-success btn-sm" target="_blank">
+                        <i class="fas fa-eye"></i> Preview
+                    </a>
+                </div>
+                {% else %}
+                <div class="text-center text-muted">
+                    <small>No students enrolled</small>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<div class="no-events">
+    <i class="fas fa-certificate"></i>
+    <h5>No events available</h5>
+    <p>Create events and add students to generate certificates</p>
+    <div class="d-flex justify-content-center gap-2">
+        <a href="{{ url_for('events') }}" class="btn btn-warning">
+            <i class="fas fa-plus me-2"></i>Create Event
+        </a>
+        <a href="{{ url_for('upload_students') }}" class="btn btn-info">
+            <i class="fas fa-upload me-2"></i>Upload Students
+        </a>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    // Generate and email function
+    function generateAndEmail() {
+        const eventId = document.querySelector('select[name="event_id"]').value;
+        if (!eventId) {
+            alert('Please select an event first');
+            return;
+        }
+        
+        if (confirm('Generate certificates and email them to all students?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ url_for("bulk_email_certificates") }}';
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'event_id';
+            input.value = eventId;
+            
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Generate for specific event
+    function generateForEvent(eventId, eventTitle) {
+        if (confirm(`Generate certificates for "${eventTitle}"?`)) {
+            document.querySelector('select[name="event_id"]').value = eventId;
+            document.querySelector('form').submit();
+        }
+    }
+
+    // Email for specific event
+    function emailForEvent(eventId, eventTitle) {
+        if (confirm(`Generate and email certificates for "${eventTitle}"?`)) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ url_for("bulk_email_certificates") }}';
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'event_id';
+            input.value = eventId;
+            
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Form submission handling
+    document.querySelector('form').addEventListener('submit', function() {
+        const btn = this.querySelector('button[type="submit"]');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating...';
+        btn.disabled = true;
+    });
+</script>
+{% endblock %}

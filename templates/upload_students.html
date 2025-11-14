@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Students - Certificate Manager{% endblock %}
+
+{% block content %}
+<style>
+    .upload-header {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    .upload-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        border: 1px solid #e9ecef;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #10b981;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        outline: none;
+    }
+
+    .btn-success {
+        background: #10b981;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-success:hover {
+        background: #059669;
+        transform: translateY(-1px);
+    }
+
+    .format-guide {
+        background: #f0f9ff;
+        border: 1px solid #e0f2fe;
+        border-radius: 10px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .format-table {
+        font-size: 0.9rem;
+    }
+
+    .format-table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .student-card {
+        background: white;
+        border-radius: 10px;
+        padding: 1rem;
+        border: 1px solid #e9ecef;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .student-card:hover {
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transform: translateY(-1px);
+    }
+
+    .student-name {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.25rem;
+    }
+
+    .student-details {
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .action-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        border-radius: 6px;
+        margin-right: 0.5rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .no-events {
+        text-align: center;
+        padding: 3rem;
+        color: #666;
+    }
+
+    .no-events i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .upload-info {
+        font-size: 0.85rem;
+        color: #666;
+        margin-top: 0.5rem;
+    }
+
+    .stats-badge {
+        background: #10b981;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+</style>
+
+<!-- Header -->
+<div class="upload-header">
+    <h1 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem;">Student Management</h1>
+    <p style="font-size: 1.1rem; opacity: 0.9; margin: 0;">Upload and manage students for your events</p>
+</div>
+
+<!-- Upload Form -->
+<div class="upload-card">
+    <h2 class="section-title">Upload Students</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Select Event</label>
+                    <select class="form-select" name="event_id" required>
+                        <option value="">Choose an event...</option>
+                        {% for event in events %}
+                        <option value="{{ event.id }}" {% if selected_event and event.id == selected_event.id %}selected{% endif %}>
+                            {{ event.title }} ({{ event.event_type.value }})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Excel File</label>
+                    <input type="file" class="form-control" name="file" accept=".xlsx,.xls" required>
+                    <div class="upload-info">
+                        <i class="fas fa-info-circle me-1"></i>Upload Excel file with student data
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-upload me-2"></i>Upload Students
+        </button>
+    </form>
+</div>
+
+<!-- Format Guide -->
+<div class="format-guide">
+    <h3 style="font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; color: #0369a1;">
+        <i class="fas fa-table me-2"></i>Excel Format Guide
+    </h3>
+    <p style="margin-bottom: 1rem; color: #374151;">Your Excel file should have these columns:</p>
+    
+    <div class="table-responsive">
+        <table class="table table-sm format-table">
+            <thead>
+                <tr>
+                    <th>Column</th>
+                    <th>Required</th>
+                    <th>Example</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><code>name</code></td>
+                    <td><span class="badge bg-danger">Required</span></td>
+                    <td>John Doe</td>
+                </tr>
+                <tr>
+                    <td><code>email</code></td>
+                    <td><span class="badge bg-danger">Required</span></td>
+                    <td>john@email.com</td>
+                </tr>
+                <tr>
+                    <td><code>student_id</code></td>
+                    <td><span class="badge bg-secondary">Optional</span></td>
+                    <td>2021001</td>
+                </tr>
+                <tr>
+                    <td><code>phone</code></td>
+                    <td><span class="badge bg-secondary">Optional</span></td>
+                    <td>123-456-7890</td>
+                </tr>
+                <tr>
+                    <td><code>department</code></td>
+                    <td><span class="badge bg-secondary">Optional</span></td>
+                    <td>Computer Science</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+        <strong style="color: #065f46;">💡 Pro Tip:</strong> 
+        <span style="color: #047857;">Existing students will automatically be added to new events without duplicates!</span>
+    </div>
+</div>
+
+<!-- Students List -->
+{% if selected_event and participants %}
+<div class="upload-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="section-title mb-0">Students in {{ selected_event.title }}</h2>
+        <span class="stats-badge">{{ participants|length }} students</span>
+    </div>
+
+    <!-- Quick Actions -->
+    <div style="background: #f0fdf4; border: 1px solid #dcfce7; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem;">
+        <div class="d-flex flex-wrap gap-2">
+            <button class="btn btn-outline-success btn-sm" onclick="emailAllCertificates({{ selected_event.id }})">
+                <i class="fas fa-certificate me-1"></i>Email All Certificates
+            </button>
+            <button class="btn btn-outline-info btn-sm" onclick="downloadAllCertificates()">
+                <i class="fas fa-download me-1"></i>Download All
+            </button>
+        </div>
+    </div>
+
+    <!-- Students Grid -->
+    <div class="row">
+        {% for participation in participants %}
+        <div class="col-lg-6 col-xl-4 mb-3">
+            <div class="student-card">
+                <div class="student-name">{{ participation.student.name }}</div>
+                <div class="student-details">
+                    <div><i class="fas fa-envelope me-2"></i>{{ participation.student.email }}</div>
+                    {% if participation.student.student_id %}
+                    <div><i class="fas fa-id-card me-2"></i>{{ participation.student.student_id }}</div>
+                    {% endif %}
+                    {% if participation.student.department %}
+                    <div><i class="fas fa-building me-2"></i>{{ participation.student.department }}</div>
+                    {% endif %}
+                    <div><i class="fas fa-calendar me-2"></i>{{ participation.registered_at.strftime('%b %d, %Y') }}</div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="mt-2 d-flex flex-wrap gap-1">
+                    <a href="{{ url_for('generate_pdf', event_id=selected_event.id, student_id=participation.student.id) }}" 
+                       class="action-btn btn btn-outline-success btn-sm">
+                        <i class="fas fa-download"></i> PDF
+                    </a>
+                    <a href="{{ url_for('send_certificate_email', event_id=selected_event.id, student_id=participation.student.id) }}" 
+                       class="action-btn btn btn-outline-info btn-sm">
+                        <i class="fas fa-envelope"></i> Email
+                    </a>
+                    <a href="{{ url_for('preview_certificate_html', event_id=selected_event.id, student_id=participation.student.id) }}" 
+                       class="action-btn btn btn-outline-warning btn-sm" target="_blank">
+                        <i class="fas fa-eye"></i> Preview
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<!-- No Events Message -->
+{% if not events %}
+<div class="no-events">
+    <i class="fas fa-calendar-alt"></i>
+    <h5>No events available</h5>
+    <p>Create an event first before uploading students</p>
+    <a href="{{ url_for('events') }}" class="btn btn-success">
+        <i class="fas fa-plus me-2"></i>Create Event
+    </a>
+</div>
+{% endif %}
+
+<script>
+    // Email all certificates
+    function emailAllCertificates(eventId) {
+        if (confirm('Send certificates to all students in this event?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ url_for("bulk_email_certificates") }}';
+            
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'event_id';
+            input.value = eventId;
+            
+            form.appendChild(input);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Download all certificates
+    function downloadAllCertificates() {
+        alert('This feature will be available soon!');
+    }
+
+    // Form submission handling
+    document.querySelector('form').addEventListener('submit', function() {
+        const btn = this.querySelector('.btn-success');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Uploading...';
+        btn.disabled = true;
+    });
+
+    // File validation
+    document.querySelector('input[type="file"]').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const allowedTypes = [
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.ms-excel'
+            ];
+            
+            if (!allowedTypes.includes(file.type)) {
+                alert('Please upload a valid Excel file (.xlsx or .xls)');
+                e.target.value = '';
+                return;
+            }
+            
+            // Check file size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File is too large. Maximum size is 10MB.');
+                e.target.value = '';
+                return;
+            }
+        }
+    });
+</script>
+{% endblock %}

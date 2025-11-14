@@ -1,0 +1,385 @@
+{% extends "base.html" %}
+
+{% block title %}Events - Certificate Manager{% endblock %}
+
+{% block content %}
+<style>
+    .event-header {
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        color: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        color: #333;
+    }
+
+    .form-card {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        border: 1px solid #e9ecef;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        color: #333;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 0.75rem;
+        transition: all 0.2s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #6366f1;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        outline: none;
+    }
+
+    .btn-primary {
+        background: #6366f1;
+        border: none;
+        border-radius: 8px;
+        padding: 0.75rem 2rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+        background: #5856eb;
+        transform: translateY(-1px);
+    }
+
+    .event-card {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+        border: 1px solid #e9ecef;
+        margin-bottom: 1rem;
+        transition: all 0.2s ease;
+    }
+
+    .event-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .event-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 0.5rem;
+    }
+
+    .event-details {
+        color: #666;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+
+    .event-type {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        margin-bottom: 1rem;
+    }
+
+    .action-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.85rem;
+        border-radius: 6px;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        text-decoration: none;
+        transition: all 0.2s ease;
+    }
+
+    .preview-box {
+        border: 2px dashed #e9ecef;
+        border-radius: 8px;
+        padding: 1rem;
+        text-align: center;
+        background: #f8f9fa;
+        margin-top: 0.5rem;
+        display: none;
+    }
+
+    .preview-img {
+        max-width: 100px;
+        max-height: 60px;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+    }
+
+    .no-events {
+        text-align: center;
+        padding: 3rem;
+        color: #666;
+    }
+
+    .no-events i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .upload-info {
+        font-size: 0.8rem;
+        color: #666;
+        margin-top: 0.5rem;
+    }
+</style>
+
+<!-- Header -->
+<div class="event-header">
+    <h1 style="font-size: 2rem; font-weight: 600; margin-bottom: 0.5rem;">Event Management</h1>
+    <p style="font-size: 1.1rem; opacity: 0.9; margin: 0;">Create and manage your events with ease</p>
+</div>
+
+<!-- Create New Event -->
+<div class="form-card">
+    <h2 class="section-title">Create New Event</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Event Title</label>
+                    <input type="text" class="form-control" name="title" placeholder="Enter event name" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Event Type</label>
+                    <select class="form-select" name="event_type" required>
+                        <option value="">Choose type...</option>
+                        <option value="Seminar">📊 Seminar</option>
+                        <option value="Webinar">💻 Webinar</option>
+                        <option value="Workshop">🔧 Workshop</option>
+                        <option value="Conference">🎤 Conference</option>
+                        <option value="Lecture">📚 Lecture</option>
+                        <option value="Training">🎯 Training</option>
+                        <option value="Competition">🏆 Competition</option>
+                        <option value="Hackathon">💡 Hackathon</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Organizer</label>
+                    <input type="text" class="form-control" name="organizer" placeholder="Who is organizing?" required>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Location</label>
+                    <input type="text" class="form-control" name="location" placeholder="Where is it happening?" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Start Date</label>
+                    <input type="date" class="form-control" name="start_date" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">End Date</label>
+                    <input type="date" class="form-control" name="end_date" required>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Year</label>
+                    <input type="number" class="form-control" name="year" min="2020" max="2030" value="{{ current_year or 2025 }}" required>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Description (Optional)</label>
+            <textarea class="form-control" name="description" rows="2" placeholder="Brief description of the event..."></textarea>
+        </div>
+
+        <!-- Image Uploads -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Logo</label>
+                    <input type="file" class="form-control" name="logo" accept="image/*" onchange="previewImage(this, 'logoPreview')">
+                    <div class="upload-info">PNG, JPG (max 16MB)</div>
+                    <div id="logoPreview" class="preview-box">
+                        <img class="preview-img">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Signature</label>
+                    <input type="file" class="form-control" name="signature" accept="image/*" onchange="previewImage(this, 'signaturePreview')">
+                    <div class="upload-info">Authorized signature image</div>
+                    <div id="signaturePreview" class="preview-box">
+                        <img class="preview-img">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Background</label>
+                    <input type="file" class="form-control" name="background" accept="image/*" onchange="previewImage(this, 'backgroundPreview')">
+                    <div class="upload-info">Certificate background image</div>
+                    <div id="backgroundPreview" class="preview-box">
+                        <img class="preview-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Create Event
+        </button>
+    </form>
+</div>
+
+<!-- Events List -->
+<div class="form-card">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="section-title mb-0">Your Events</h2>
+        <span class="badge bg-primary">{{ events|length }} events</span>
+    </div>
+
+    {% if events %}
+    <div class="row">
+        {% for event in events %}
+        <div class="col-lg-6 col-xl-4 mb-3">
+            <div class="event-card">
+                <!-- Event Type Badge -->
+                {% set type_colors = {
+                    'Seminar': 'bg-info',
+                    'Webinar': 'bg-success', 
+                    'Workshop': 'bg-warning',
+                    'Conference': 'bg-primary',
+                    'Lecture': 'bg-secondary',
+                    'Training': 'bg-dark',
+                    'Competition': 'bg-danger',
+                    'Hackathon': 'bg-info'
+                } %}
+                <span class="event-type {{ type_colors.get(event.event_type.value, 'bg-light text-dark') }}">
+                    {{ event.event_type.value }}
+                </span>
+
+                <!-- Event Title -->
+                <h5 class="event-title">{{ event.title }}</h5>
+
+                <!-- Event Details -->
+                <div class="event-details">
+                    <div><i class="fas fa-building me-2"></i>{{ event.organizer }}</div>
+                    <div><i class="fas fa-map-marker-alt me-2"></i>{{ event.location }}</div>
+                    <div>
+                        <i class="fas fa-calendar me-2"></i>
+                        {% if event.start_date and event.end_date %}
+                            {% if event.start_date == event.end_date %}
+                                {{ event.start_date.strftime('%b %d, %Y') }}
+                            {% else %}
+                                {{ event.start_date.strftime('%b %d') }} - {{ event.end_date.strftime('%b %d, %Y') }}
+                            {% endif %}
+                        {% else %}
+                            {{ event.date.strftime('%b %d, %Y') if event.date else 'No date set' }}
+                        {% endif %}
+                    </div>
+                    <div><i class="fas fa-users me-2"></i>{{ event.participants|length }} students</div>
+                    
+                    <!-- Images Info -->
+                    <div class="mt-2">
+                        {% if event.logo_path %}<span class="badge bg-light text-dark me-1">Logo</span>{% endif %}
+                        {% if event.signature_path %}<span class="badge bg-light text-dark me-1">Signature</span>{% endif %}
+                        {% if event.background_path %}<span class="badge bg-light text-dark me-1">Background</span>{% endif %}
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-3">
+                    <a href="{{ url_for('upload_students', event_id=event.id) }}" class="action-btn btn btn-outline-primary btn-sm">
+                        <i class="fas fa-users"></i> Students
+                    </a>
+                    <a href="{{ url_for('bulk_certificates') }}?event_id={{ event.id }}" class="action-btn btn btn-outline-success btn-sm">
+                        <i class="fas fa-certificate"></i> Certificates
+                    </a>
+                    {% if event.participants %}
+                    <a href="{{ url_for('preview_certificate_html', event_id=event.id, student_id=event.participants[0].student.id) }}" 
+                       class="action-btn btn btn-outline-warning btn-sm" target="_blank">
+                        <i class="fas fa-eye"></i> Preview
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-events">
+        <i class="fas fa-calendar-alt"></i>
+        <h5>No events yet</h5>
+        <p>Create your first event to get started with certificate generation</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+    // Image preview function
+    function previewImage(input, previewId) {
+        const preview = document.getElementById(previewId);
+        const img = preview.querySelector('img');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                img.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.style.display = 'none';
+        }
+    }
+
+    // Set minimum date to today
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.querySelector('input[name="start_date"]').min = today;
+        document.querySelector('input[name="end_date"]').min = today;
+    });
+
+    // Form submission handling
+    document.querySelector('form').addEventListener('submit', function() {
+        const btn = this.querySelector('.btn-primary');
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Creating Event...';
+        btn.disabled = true;
+    });
+</script>
+{% endblock %}

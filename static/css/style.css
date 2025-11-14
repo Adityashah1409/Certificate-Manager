@@ -1,0 +1,381 @@
+/* Simple Black and White UI */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #65cec7;
+  color: #000000;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  padding-top: 70px;
+}
+
+/* Navbar */
+.navbar {
+  background-color: #000000 !important;
+  border-bottom: 2px solid #000000;
+  padding: 1rem 0;
+}
+
+.navbar-brand {
+  color: #ffffff !important;
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+
+.navbar-nav .nav-link {
+  color: #ffffff !important;
+  font-weight: 500;
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem !important;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: #ffffff;
+  color: #000000 !important;
+  border-radius: 4px;
+}
+
+.navbar-toggler {
+  border-color: #ffffff;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Dropdown */
+.dropdown-menu {
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 0;
+}
+
+.dropdown-item {
+  color: #000000;
+  font-weight: 500;
+}
+
+.dropdown-item:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* Main Content */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #000000;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Cards */
+.card {
+  background-color: #ffffff;
+  border: 2px solid #000000;
+  border-radius: 0;
+  margin-bottom: 2rem;
+}
+
+.card-header {
+  background-color: #000000;
+  color: #ffffff;
+  border-bottom: 2px solid #000000;
+  padding: 1rem;
+  font-weight: bold;
+}
+
+.card-body {
+  padding: 2rem;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 0;
+  font-weight: bold;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #000000;
+  transition: all 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.btn-primary:hover {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #000000;
+}
+
+.btn-success {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #000000;
+}
+
+.btn-success:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.btn-warning {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.btn-warning:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.btn-info {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #000000;
+}
+
+.btn-info:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.btn-danger {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.btn-danger:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.btn-outline-primary,
+.btn-outline-success,
+.btn-outline-info,
+.btn-outline-warning,
+.btn-outline-danger {
+  background-color: #ffffff;
+  color: #000000;
+  border-color: #000000;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-success:hover,
+.btn-outline-info:hover,
+.btn-outline-warning:hover,
+.btn-outline-danger:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+/* Forms */
+.form-control, .form-select {
+  border: 2px solid #000000;
+  border-radius: 0;
+  padding: 0.75rem;
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #000000;
+  box-shadow: none;
+  background-color: #ffffff;
+}
+
+.form-label {
+  color: #000000;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+/* Tables */
+.table {
+  border: 2px solid #000000;
+  background-color: #ffffff;
+}
+
+.table th {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #000000;
+  padding: 1rem;
+  font-weight: bold;
+}
+
+.table td {
+  border: 1px solid #000000;
+  padding: 1rem;
+  color: #000000;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f8f8f8;
+}
+
+/* Alerts */
+.alert {
+  border: 2px solid #000000;
+  border-radius: 0;
+  background-color: #ffffff;
+  color: #000000;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.alert-success {
+  background-color: #ffffff;
+  border-color: #000000;
+}
+
+.alert-danger {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.alert-warning {
+  background-color: #ffffff;
+  border-color: #000000;
+}
+
+.alert-info {
+  background-color: #ffffff;
+  border-color: #000000;
+}
+
+/* Badges */
+.badge {
+  background-color: #000000 !important;
+  color: #ffffff;
+  border: 1px solid #000000;
+  border-radius: 0;
+  padding: 0.5rem;
+  font-weight: bold;
+}
+
+.badge.bg-primary,
+.badge.bg-success,
+.badge.bg-info,
+.badge.bg-warning,
+.badge.bg-danger {
+  background-color: #000000 !important;
+  color: #ffffff;
+}
+
+/* Statistics Cards */
+.display-4 {
+  font-weight: bold;
+  color: #000000;
+}
+
+/* Footer */
+footer {
+  background-color: #000000;
+  color: #ffffff;
+  text-align: center;
+  padding: 2rem 0;
+  margin-top: 3rem;
+}
+
+/* Images */
+.img-thumbnail {
+  border: 2px solid #000000;
+  border-radius: 0;
+}
+
+/* Modal */
+.modal-content {
+  border: 2px solid #000000;
+  border-radius: 0;
+  background-color: #ffffff;
+}
+
+.modal-header {
+  background-color: #000000;
+  color: #ffffff;
+  border-bottom: 2px solid #000000;
+}
+
+.modal-footer {
+  border-top: 2px solid #000000;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  body {
+    padding-top: 60px;
+  }
+  
+  .navbar {
+    padding: 0.5rem 0;
+  }
+  
+  .card-body {
+    padding: 1rem;
+  }
+  
+  .btn {
+    padding: 0.5rem 1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .table-responsive {
+    border: 2px solid #000000;
+  }
+}
+
+/* Loading States */
+.spinner-border {
+  border-color: #000000;
+  border-right-color: transparent;
+}
+
+/* Custom utilities */
+.border-black {
+  border-color: #000000 !important;
+}
+
+.bg-black {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.text-black {
+  color: #000000 !important;
+}
+
+/* Hide unnecessary elements */
+.btn-close {
+  background: none;
+  border: 2px solid #000000;
+  color: #000000;
+  font-weight: bold;
+}
+
+/* File Upload */
+.form-control[type="file"] {
+  padding: 0.5rem;
+}
+
+/* Progress bars */
+.progress {
+  background-color: #ffffff;
+  border: 2px solid #000000;
+}
+
+.progress-bar {
+  background-color: #000000;
+}

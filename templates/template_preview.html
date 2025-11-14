@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}Preview - {{ template.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="text-center mb-4">
+                <h3 class="fw-bold text-dark">Template Preview: {{ template.name }}</h3>
+                <p class="text-muted">This is how your certificates will look</p>
+            </div>
+            
+            <!-- Certificate Preview -->
+            <div class="certificate-preview-wrapper p-4" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 15px;">
+                <div class="certificate-mockup bg-white shadow-lg rounded-4 p-5 mx-auto" style="max-width: 700px; border: 4px solid {{ template.template_config.colors.primary if template.template_config.colors else '#D4AF37' }};">
+                    
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <i class="fas fa-award fa-3x mb-3" style="color: {{ template.template_config.colors.primary if template.template_config.colors else '#D4AF37' }};"></i>
+                        <h2 class="fw-bold mb-2" style="color: {{ template.template_config.colors.primary if template.template_config.colors else '#D4AF37' }};">
+                            CERTIFICATE OF ACHIEVEMENT
+                        </h2>
+                        <hr style="border-color: {{ template.template_config.colors.accent if template.template_config.colors else '#8B4513' }}; width: 60%;" class="mx-auto">
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="text-center mb-4">
+                        <p class="text-muted fs-5 mb-2">This is to certify that</p>
+                        <h4 class="fw-bold text-dark mb-3 py-2 px-4 rounded" style="background-color: {{ template.template_config.colors.primary if template.template_config.colors else '#D4AF37' }}; color: white;">
+                            {{ sample.student_name|upper }}
+                        </h4>
+                        <p class="text-muted fs-6 mb-2">has successfully participated in</p>
+                        <h5 class="fw-bold mb-4" style="color: {{ template.template_config.colors.primary if template.template_config.colors else '#D4AF37' }};">
+                            "{{ sample.event_title }}"
+                        </h5>
+                    </div>
+                    
+                    <!-- Event Details -->
+                    <div class="row text-center mb-4 p-3 rounded" style="background-color: #f8f9fa; border-left: 4px solid {{ template.template_config.colors.accent if template.template_config.colors else '#8B4513' }};">
+                        <div class="col-md-4">
+                            <small class="text-muted fw-semibold d-block">Organizer</small>
+                            <span class="fw-bold">{{ sample.organizer }}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-muted fw-semibold d-block">Location</small>
+                            <span class="fw-bold">{{ sample.location }}</span>
+                        </div>
+                        <div class="col-md-4">
+                            <small class="text-muted fw-semibold d-block">Date</small>
+                            <span class="fw-bold">{{ sample.date }}</span>
+                        </div>
+                    </div>
+                    
+                    <!-- Signatures -->
+                    <div class="row mt-5">
+                        <div class="col-6 text-center">
+                            <div class="signature-line mb-2" style="height: 40px; background: linear-gradient(to right, transparent, {{ template.template_config.colors.primary if template.template_config.colors else '#D4AF37' }}, transparent); opacity: 0.3;"></div>
+                            <small class="text-muted fw-semibold">Authorized Signature</small>
+                        </div>
+                        <div class="col-6 text-center">
+                            <div class="signature-line mb-2" style="height: 40px; background: linear-gradient(to right, transparent, {{ template.template_config.colors.primary if template.template_config.colors else '#D4AF37' }}, transparent); opacity: 0.3;"></div>
+                            <small class="text-muted fw-semibold">Date: {{ sample.date }}</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Footer -->
+                    <div class="text-center mt-4">
+                        <small class="text-muted">Certificate ID: SAMPLE-{{ template.id }}-{{ sample.date|replace(' ', '')|replace(',', '') }}</small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Actions -->
+            <div class="text-center mt-4">
+                <a href="{{ url_for('templates') }}" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Templates
+                </a>
+                <a href="{{ url_for('bulk_certificates') }}" class="btn btn-success">
+                    <i class="fas fa-certificate me-2"></i>Use This Template
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.certificate-mockup {
+    position: relative;
+    overflow: hidden;
+}
+
+.certificate-mockup::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="50" opacity="0.05">✓</text></svg>') repeat;
+    pointer-events: none;
+}
+</style>
+{% endblock %}

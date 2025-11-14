@@ -1,0 +1,536 @@
+{% extends "base.html" %}
+
+{% block title %}Certificate Preview - {{ student.name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .certificate-preview {
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        border: 4px solid #D4AF37;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .certificate-preview::before {
+        content: '';
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        right: 15px;
+        bottom: 15px;
+        border: 2px solid #8B4513;
+        border-radius: 8px;
+        pointer-events: none;
+    }
+    
+    .certificate-title {
+        color: #D4AF37;
+        font-family: 'Times New Roman', serif;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(212, 175, 55, 0.3);
+        letter-spacing: 2px;
+    }
+    
+    .student-name-box {
+        background: linear-gradient(135deg, rgba(212, 175, 55, 0.15), rgba(212, 175, 55, 0.05));
+        border: 3px solid #D4AF37;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 25px 0;
+        position: relative;
+    }
+    
+    .student-name-box::before,
+    .student-name-box::after {
+        content: '✦';
+        position: absolute;
+        color: #D4AF37;
+        font-size: 24px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .student-name-box::before {
+        left: 15px;
+    }
+    
+    .student-name-box::after {
+        right: 15px;
+    }
+    
+    .event-details-box {
+        background: rgba(139, 69, 19, 0.08);
+        border: 1px solid rgba(139, 69, 19, 0.2);
+        border-radius: 10px;
+        padding: 25px;
+        margin: 20px 0;
+    }
+    
+    .signature-line {
+        border-bottom: 2px solid #333;
+        width: 200px;
+        height: 50px;
+        margin: 10px auto 5px auto;
+        position: relative;
+    }
+    
+    .decorative-line {
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #D4AF37, #8B4513, #D4AF37, transparent);
+        margin: 25px auto;
+        width: 70%;
+        border-radius: 2px;
+    }
+    
+    .ornamental-corner {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        border: 3px solid #D4AF37;
+    }
+    
+    .ornamental-corner.top-left {
+        top: 25px;
+        left: 25px;
+        border-right: none;
+        border-bottom: none;
+        border-top-left-radius: 15px;
+    }
+    
+    .ornamental-corner.top-right {
+        top: 25px;
+        right: 25px;
+        border-left: none;
+        border-bottom: none;
+        border-top-right-radius: 15px;
+    }
+    
+    .ornamental-corner.bottom-left {
+        bottom: 25px;
+        left: 25px;
+        border-right: none;
+        border-top: none;
+        border-bottom-left-radius: 15px;
+    }
+    
+    .ornamental-corner.bottom-right {
+        bottom: 25px;
+        right: 25px;
+        border-left: none;
+        border-top: none;
+        border-bottom-right-radius: 15px;
+    }
+    
+    .certificate-id {
+        font-family: 'Courier New', monospace;
+        color: #888;
+        font-size: 0.8rem;
+    }
+    
+    .action-buttons {
+        background: #f8f9fa;
+        border-top: 1px solid #dee2e6;
+        border-radius: 0 0 10px 10px;
+        padding: 20px;
+        margin-top: 30px;
+    }
+    
+    .btn-certificate {
+        margin: 5px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-certificate:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    
+    @media print {
+        .action-buttons,
+        .breadcrumb,
+        .navbar {
+            display: none !important;
+        }
+        
+        .certificate-preview {
+            box-shadow: none;
+            border: 2px solid #000;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+    
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('events') }}">Events</a></li>
+            <li class="breadcrumb-item"><a href="{{ url_for('view_event', id=event.id) }}">{{ event.title }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Certificate Preview</li>
+        </ol>
+    </nav>
+
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h2 class="mb-1">
+                        <i class="fas fa-certificate text-warning me-2"></i>
+                        Certificate Preview
+                    </h2>
+                    <p class="text-muted mb-0">
+                        Preview for <strong>{{ student.name }}</strong> - <em>{{ event.title }}</em>
+                    </p>
+                </div>
+                <div>
+                    <button onclick="window.print()" class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-print me-1"></i> Print Preview
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Preview Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            <div class="card shadow-lg">
+                <div class="certificate-preview position-relative text-center p-5" style="min-height: 600px;">
+                    
+                    <!-- Ornamental Corners -->
+                    <div class="ornamental-corner top-left"></div>
+                    <div class="ornamental-corner top-right"></div>
+                    <div class="ornamental-corner bottom-left"></div>
+                    <div class="ornamental-corner bottom-right"></div>
+                    
+                    <!-- Institution Logo (if available) -->
+                    {% if event.organizer %}
+                    <div class="mb-3">
+                        {% if event.logo %}
+                        <img src="{{ url_for('static', filename='uploads/logos/' + event.logo) }}" 
+                             alt="Logo" class="img-fluid" style="max-height: 80px;">
+                        {% endif %}
+                        <h6 class="text-muted text-uppercase mt-2 mb-0" style="letter-spacing: 1px;">
+                            {{ event.organizer }}
+                        </h6>
+                    </div>
+                    {% endif %}
+
+                    <!-- Certificate Header -->
+                    <div class="mb-4">
+                        <h1 class="certificate-title display-3 mb-2">
+                            CERTIFICATE
+                        </h1>
+                        <h2 class="certificate-title h3 text-secondary">
+                            OF ACHIEVEMENT
+                        </h2>
+                        <div class="decorative-line"></div>
+                    </div>
+                    
+                    <!-- Certificate Body -->
+                    <div class="mb-4">
+                        <p class="h5 text-muted mb-4" style="font-style: italic;">
+                            This certificate is proudly presented to
+                        </p>
+                        
+                        <!-- Student Name Box -->
+                        <div class="student-name-box">
+                            <h2 class="certificate-title display-4 mb-0" style="color: #8B4513;">
+                                {{ student.name.upper() }}
+                            </h2>
+                        </div>
+                        
+                        <!-- Achievement Text -->
+                        <div class="mb-3">
+                            <p class="h6 text-dark">
+                                for outstanding participation in
+                                {% if event.event_type %}
+                                <span class="badge bg-primary ms-1">{{ event.event_type.value }}</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        <!-- Event Title -->
+                        <h3 class="text-warning fw-bold fst-italic mb-4">
+                            "{{ event.title }}"
+                        </h3>
+                    </div>
+                    
+                    <!-- Event Details Box -->
+                    <div class="event-details-box">
+                        <div class="row text-start">
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <h6 class="fw-bold text-secondary mb-1">
+                                    <i class="fas fa-calendar-alt me-2"></i>Event Date
+                                </h6>
+                                <p class="mb-0">{{ event.date.strftime('%B %d, %Y') }}</p>
+                            </div>
+                            
+                            {% if event.location %}
+                            <div class="col-md-4 mb-3 mb-md-0">
+                                <h6 class="fw-bold text-secondary mb-1">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Location
+                                </h6>
+                                <p class="mb-0">{{ event.location }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if event.duration %}
+                            <div class="col-md-4">
+                                <h6 class="fw-bold text-secondary mb-1">
+                                    <i class="fas fa-clock me-2"></i>Duration
+                                </h6>
+                                <p class="mb-0">{{ event.duration }}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        {% if event.description %}
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <hr class="my-2">
+                                <p class="small text-muted mb-0 text-center">
+                                    {{ event.description[:200] }}
+                                    {% if event.description|length > 200 %}...{% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Signature Section -->
+                    <div class="row mt-5">
+                        <div class="col-md-6 text-center">
+                            <div class="signature-line">
+                                <!-- Signature image placeholder -->
+                                {% if templates and templates[0].signature_image %}
+                                <img src="{{ url_for('static', filename='uploads/signatures/' + templates[0].signature_image) }}" 
+                                     alt="Signature" class="img-fluid" style="max-height: 40px; margin-top: 10px;">
+                                {% endif %}
+                            </div>
+                            <small class="fw-bold d-block">Director/Principal</small>
+                            <small class="text-muted fst-italic">Authorized Signature</small>
+                        </div>
+                        
+                        <div class="col-md-6 text-center">
+                            <div class="signature-line d-flex align-items-end justify-content-center">
+                                <span class="fw-bold">{{ moment().format('MMMM DD, YYYY') }}</span>
+                            </div>
+                            <small class="fw-bold d-block">Date of Issue</small>
+                            <small class="text-muted fst-italic">Certificate Generated</small>
+                        </div>
+                    </div>
+                    
+                    <!-- Certificate ID -->
+                    <div class="mt-4 pt-3 border-top">
+                        <p class="certificate-id mb-1">
+                            Certificate ID: CERT-{{ event.id }}-{{ student.id }}-{{ moment().format('YYYYMMDD') }}
+                        </p>
+                        <small class="text-muted">Generated by Certificate Management System</small>
+                    </div>
+                    
+                </div>
+                
+                <!-- Action Buttons Section -->
+                <div class="action-buttons">
+                    <div class="row">
+                        <!-- Navigation -->
+                        <div class="col-md-4 d-flex align-items-center">
+                            <a href="{{ url_for('view_event', id=event.id) }}" class="btn btn-outline-secondary btn-certificate">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Event
+                            </a>
+                        </div>
+                        
+                        <!-- Certificate Generation Options -->
+                        <div class="col-md-8">
+                            <h6 class="fw-bold mb-3 text-center">Generate Certificate</h6>
+                            
+                            <div class="d-flex flex-wrap justify-content-center">
+                                <!-- Default Certificate -->
+                                <a href="{{ url_for('generate_certificate', event_id=event.id, student_id=student.id) }}" 
+                                   class="btn btn-success btn-certificate">
+                                    <i class="fas fa-download me-2"></i>Default Certificate
+                                </a>
+                                
+                                <!-- Custom Font Certificate -->
+                                <a href="{{ url_for('generate_certificate', event_id=event.id, student_id=student.id, certificate_type='custom_font') }}" 
+                                   class="btn btn-primary btn-certificate">
+                                    <i class="fas fa-paint-brush me-2"></i>Custom Design
+                                </a>
+                                
+                                <!-- Enhanced Certificate -->
+                                <a href="{{ url_for('generate_certificate', event_id=event.id, student_id=student.id, certificate_type='enhanced') }}" 
+                                   class="btn btn-warning btn-certificate">
+                                    <i class="fas fa-award me-2"></i>Enhanced
+                                </a>
+                                
+                                <!-- Premium Certificate -->
+                                <a href="{{ url_for('generate_certificate', event_id=event.id, student_id=student.id, certificate_type='premium') }}" 
+                                   class="btn btn-info btn-certificate">
+                                    <i class="fas fa-crown me-2"></i>Premium
+                                </a>
+                            </div>
+                            
+                            <!-- Template-based Certificates -->
+                            {% if templates %}
+                            <div class="mt-3">
+                                <h6 class="fw-bold mb-2 text-center">Template-based Certificates</h6>
+                                <div class="d-flex flex-wrap justify-content-center">
+                                    {% for template in templates %}
+                                    <a href="{{ url_for('generate_certificate', event_id=event.id, student_id=student.id, template_id=template.id) }}" 
+                                       class="btn btn-outline-primary btn-certificate btn-sm">
+                                        <i class="fas fa-file-alt me-1"></i>{{ template.name }}
+                                    </a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Email Option -->
+                            <div class="mt-3 pt-3 border-top">
+                                <a href="{{ url_for('send_certificate_email', event_id=event.id, student_id=student.id) }}" 
+                                   class="btn btn-outline-success btn-certificate">
+                                    <i class="fas fa-envelope me-2"></i>Email Certificate
+                                </a>
+                                
+                                <!-- Preview HTML Option -->
+                                <button class="btn btn-outline-info btn-certificate" onclick="toggleHTMLPreview()">
+                                    <i class="fas fa-code me-2"></i>View HTML
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Event Participants Summary -->
+    {% if event.participants %}
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-users me-2"></i>Other Participants
+                    </h5>
+                    <a href="{{ url_for('generate_bulk_certificates', event_id=event.id) }}" 
+                       class="btn btn-warning btn-sm">
+                        <i class="fas fa-download me-1"></i>Generate All Certificates
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for participant in event.participants[:6] %}
+                        {% if participant.student.id != student.id %}
+                        <div class="col-md-4 mb-2">
+                            <div class="d-flex justify-content-between align-items-center p-2 bg-light rounded">
+                                <span>{{ participant.student.name }}</span>
+                                <a href="{{ url_for('preview_certificate_html', event_id=event.id, student_id=participant.student.id) }}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                        
+                        {% if event.participants|length > 7 %}
+                        <div class="col-12 mt-2">
+                            <p class="text-muted text-center">
+                                ... and {{ event.participants|length - 6 }} more participants
+                            </p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+</div>
+
+<!-- HTML Preview Modal (hidden by default) -->
+<div class="modal fade" id="htmlPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Certificate HTML Code</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <pre><code id="htmlCode" class="language-html"></code></pre>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="copyHTML()">Copy HTML</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleHTMLPreview() {
+    // Get the certificate HTML
+    const certificateHTML = document.querySelector('.certificate-preview').outerHTML;
+    
+    // Clean up the HTML and format it
+    const cleanHTML = certificateHTML.replace(/class="[^"]*"/g, function(match) {
+        return match.replace(/\s+/g, ' ');
+    });
+    
+    // Display in modal
+    document.getElementById('htmlCode').textContent = cleanHTML;
+    
+    // Show modal
+    const modal = new bootstrap.Modal(document.getElementById('htmlPreviewModal'));
+    modal.show();
+}
+
+function copyHTML() {
+    const htmlCode = document.getElementById('htmlCode').textContent;
+    navigator.clipboard.writeText(htmlCode).then(function() {
+        // Show success message
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.classList.remove('btn-primary');
+        btn.classList.add('btn-success');
+        
+        setTimeout(function() {
+            btn.textContent = originalText;
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-primary');
+        }, 2000);
+    });
+}
+
+// Print functionality
+window.addEventListener('beforeprint', function() {
+    document.title = '{{ student.name }} - {{ event.title }} Certificate';
+});
+
+// Auto-refresh certificate ID with current timestamp
+setInterval(function() {
+    const certId = document.querySelector('.certificate-id');
+    if (certId) {
+        const now = new Date();
+        const dateStr = now.getFullYear() + 
+                       String(now.getMonth() + 1).padStart(2, '0') + 
+                       String(now.getDate()).padStart(2, '0');
+        certId.innerHTML = certId.innerHTML.replace(/CERT-\d+-\d+-\d+/, 
+                          `CERT-{{ event.id }}-{{ student.id }}-${dateStr}`);
+    }
+}, 60000); // Update every minute
+</script>
+{% endblock %}
